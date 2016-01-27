@@ -11,10 +11,15 @@
   activityLabelsFile <- "activity_labels.txt"
   featuresFile <- "features.txt"
   
+  # Index vectors for both features (column names for measurements) and
+  # activities (row names for activity IDs). In both cases, we discard the
+  # first column (the numbers) and keep only the second (the labels themselves).
   featuresIndex <- read.table(file.path(dataFolder, featuresFile), 
-                              col.names = c("id", "features"))
+                              col.names = c("id", "features"),
+                              stringsAsFactors = FALSE)[2]
   activityIndex <- read.table(file.path(dataFolder, activityLabelsFile), 
-                              col.names = c("id", "labels"))
+                              col.names = c("id", "labels"),
+                              stringsAsFactors = FALSE)[2]
   #-----------------------------------------------------------------------------
   # PART II - READING TRAINING DATA (subject IDs, activity IDs and measurements)
   trainSubjectsFile <- "subject_train.txt"
@@ -28,7 +33,7 @@
   
   # List of activity IDs for training data. One activity ID per row.
   trainActivityIDs <- read.table(file.path(trainFolder, yTrainFile), 
-                                 col.names = "id")
+                                 col.names = "activity")
   # Training measurements (the 'core' of the training data).
   trainData <- read.table(file.path(trainFolder, trainDataFile), 
                           col.names = featuresIndex$features)
@@ -45,7 +50,7 @@
   
   # List of activity IDs for test data. One activity ID per row.
   testActivityIDs <- read.table(file.path(testFolder, yTestFile), 
-                                col.names = "id")
+                                col.names = "activity")
   
   # Test measurements (the 'core' of the test data).
   testData <- read.table(file.path(testFolder, testDataFile), 
@@ -54,27 +59,30 @@
   ##############################################################################
   # STEP 1) MERGE THE TRAINING AND TEST SETS TO CREATE ONE DATA SET.
   ##############################################################################
-  # Creation of the activities map. This data frame maps the vector of the
-  # activity IDs for the training and test data to their respective activity
-  # label, using the 'activityIndex' data frame. We use 'join()' instead of 
-  # 'merge()' in this case because we want to preserve the order of the 
-  # 'xxxActivityIDs' rows. We'll use the map later on to replace the activityIDs
-  # with the corresponding activity labels.
-  trainActivitiesMap <- join(trainActivityIDs, activityIndex, by = "id")
-  testActivitiesMap <- join(testActivityIDs, activityIndex, by = "id")
-  
-  # Construction of the full data sets for the training and the test data. The
-  # data set has the following format:
-  # |---------------------------------------------------------------------|
-  # | subjectID | ActivityLabel | Feature 1 | Feature 2 | ... | Feature n |
-  # |---------------------------------------------------------------------|
-  trainActivityLabels <- data.frame(activity = 
-                                      as.character(trainActivitiesMap$labels))
-  testActivityLabels <- data.frame(activity = 
-                                     as.character(testActivitiesMap$labels))
-  
-  trainDataset <- cbind(trainSubjectIDs, trainActivityLabels, trainData)
-  testDataset <- cbind(testSubjectIDs, testActivityLabels, testData)
+  # We don't need to use 'merge()' at all here. A simple 'cbind()' should do the
+  # trick, since we are only assembling tables.
+  trainDataset <- cbind(trainSubjectIDs, trainActivityIDs, trainData)
+  testDataset <- cbind(testSubjectIDs, testActivityIDs, testData)
   
   fullDataset <- rbind(trainDataset, testDataset)
+  
+  ##############################################################################
+  # STEP 2) EXTRACT ONLY THE MEASUREMENTS ON THE MEAN AND STANDARD DEVIATION
+  #         FOR EACH MEASUREMENT
+  ##############################################################################
+  # This could be solved with a single command:
+  #     'select(fullDataSet, 1:2, contains("mean"), contains("std"))'
+  # but we want to select the columns in the same order as they appear in the
+  # 'fullDataset' variable. So, instead, we first search the occurrences of 
+  # 'mean' and 'std' in the features index, add the first two columns and sort
+  # the resulting vestor, before passing it to the 'select()' call.
+  meanIndex <- grep("mean", featuresIndex$features, ignore.case = TRUE) + 2
+  stdIndex <- grep("std", featuresIndex$features, ignore.case = TRUE) + 2
+  indexes <- sort(c(1:2, meanIndex, stdIndex))
+  meanStdDataset <- select(fullDataset, indexes)
+  
+  ##############################################################################
+  # STEP 3) USE DESCRIPTIVE ACTIVITY NAMES THE ACTIVITIES IN THE DATA SET
+  ##############################################################################
+  meanStdDataset$activity <- activityIndex[meanStdDataset$activity, 1]
 #}
