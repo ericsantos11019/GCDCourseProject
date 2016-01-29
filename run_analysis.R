@@ -1,12 +1,18 @@
 run_analysis <- function()
 {
-  library(plyr)
-  library(dplyr)
-  library(stringi)
+  require(dplyr, warn.conflicts = FALSE)
+
+  # Sets the working directory to the project folder (the folder in which this
+  # script file is currently in).
+  previousWD <- getwd()
+  newWD <- getSrcDirectory(function(x) {x})
+  setwd(newWD)
   
   ##############################################################################
   # STEP 0) READING DATA
   ##############################################################################
+  message("Step 0: Reading Data...")
+  
   # PART I - READING COMMON DATA (index files for features and activity labels)
   dataFolder <- "UCI HAR Dataset"
   activityLabelsFile <- "activity_labels.txt"
@@ -60,6 +66,8 @@ run_analysis <- function()
   ##############################################################################
   # STEP 1) MERGE THE TRAINING AND TEST SETS TO CREATE ONE DATA SET.
   ##############################################################################
+  message("Step 1: Merging Data...")
+
   # We don't need to use 'merge()' at all here. A simple 'cbind()' should do the
   # trick, since we are only assembling tables.
   trainDataset <- cbind(trainSubjectIDs, trainActivityIDs, trainData)
@@ -71,6 +79,8 @@ run_analysis <- function()
   # STEP 2) EXTRACT ONLY THE MEASUREMENTS ON THE MEAN AND STANDARD DEVIATION
   #         FOR EACH MEASUREMENT
   ##############################################################################
+  message("Step 2: Extracting Mean and Standard Deviation Measurements...")
+  
   # This could be solved with a single command:
   #     'select(fullDataSet, 1:2, contains("mean"), contains("std"))'
   # but we want to select the columns in the same order as they appear in the
@@ -86,6 +96,8 @@ run_analysis <- function()
   ##############################################################################
   # STEP 3) USE DESCRIPTIVE ACTIVITY NAMES THE ACTIVITIES IN THE DATA SET
   ##############################################################################
+  message("Step 3: Replacing Activity Names...")
+  
   meanStdDataset$activity <- activityIndex[meanStdDataset$activity, 1]
   
   ##############################################################################
@@ -98,38 +110,47 @@ run_analysis <- function()
   # means all the parenthesis ('(' and ')'), dashes ('-') and commas from the 
   # variable names have already been stripped by R standard behavior. We only
   # need to worry about the dots now.
+  message("Step 4: Labelling Dataset...")
   
   # First, we read the current variable names.
   newColumnNames <- colnames(meanStdDataset)
   
   # Next, we want to find out those variables whose names START with 'f' or 't'
-  # to change them to more meaningful terms. For that, we use the 'stringi'
-  # package functions, which facilitate string manipulation in R.
-  f <- stri_startswith_fixed(newColumnNames, "f")
-  t <- stri_startswith_fixed(newColumnNames, "t")
-  
-  # Then we replace those initial 'f's and 't's with 'frequency' and 'time',
-  # respectively.
-  newColumnNames[f] <- sub("f", "frequency", newColumnNames[f], fixed = TRUE)
-  newColumnNames[t] <- sub("t", "time", newColumnNames[t], fixed = TRUE)
+  # to change them to more meaningful terms.
+  newColumnNames <- sub("^f", "frequency", newColumnNames)
+  newColumnNames <- sub("^t", "time", newColumnNames)
   
   # Finally, we finish the cleanup by adjusting capitalization and removing
   # dots.
   newColumnNames <- gsub("mean", "Mean", newColumnNames, fixed = TRUE)
   newColumnNames <- gsub("std", "Std", newColumnNames, fixed = TRUE)
   newColumnNames <- gsub(".", "", newColumnNames, fixed = TRUE)
+  newColumnNames <- gsub("Acc", "Acceleration", newColumnNames, fixed = TRUE)
+  
   colnames(meanStdDataset) <- newColumnNames
+  
+  # After the new, tidy dataset is created, it's exported to a CSV file.
+  write.table(meanStdDataset, "processed_dataset.txt", row.names = FALSE)
   
   ##############################################################################
   # STEP 5) CREATE A SECOND, INDEPENDENT TIDY DATA SET WITH THE AVERAGE OF EACH 
   #         VARIABLE FOR EACH ACTIVITY AND EACH SUBJECT
   ##############################################################################
+  message("Step 5: Creating Second Tidy Dataset...")
+  
   # In order to follow the definition above, we group by activity FIRST, and
   # then by subject.
   groupedDataset <- group_by(meanStdDataset, activity, subjectID)
   
   # Now we use 'summarize_each()' to calculate the mean for each group.
   tidyDataset <- summarize_each(groupedDataset, funs(mean))
+  
+  # Then, we write the new tidy dataset to another file.
+  write.table(tidyDataset, "tidy_dataset.txt", row.names = FALSE)
+  
+  message("Cleaning up and returning...")
+  # Sets the working directory back to the previous folder.
+  setwd(previousWD)
   
   # Finally, we return the tidy dataset calculated above, converted to tbl_df
   # for nicer printing.
