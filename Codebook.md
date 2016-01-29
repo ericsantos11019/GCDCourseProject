@@ -11,8 +11,18 @@ The tidy data set contains the following variables:
 
 1. **“activity”:** A character vector indicating the activity performed by the subject during this particular measurement. Can be one of the following:
 
-		“WALKING”, “WALKING_UPSTAIRS”, “WALKING_DOWNSTAIRS”, “SITTING”, “STANDING” and “LAYING”.
+		“WALKING”
+		“WALKING_UPSTAIRS”
+		“WALKING_DOWNSTAIRS”
+		“SITTING”, “STANDING”
+		“LAYING”.
+		
 2. **”subject”:** An integer from 1 to 30 indicating the subject ID for this particular row or measurement.
-3. **Subsequent Variables:** The remaining columns in the data set indicate the acquired signal measured from the actual sensors and the estimated value calculated from these signals. The variables started by the prefix “time” are time-domain calculated quantities. Similarly, variables started by the prefix “frequency” are frequency-domain quantities, calculated by applying a Fast Fourier Transform (FFT) on the original quantities measured.
+3. **Subsequent Variables:** The remaining columns in the data set indicate the signal acquired from the actual sensors and the estimated quantity calculated from these signals.
 
-	The variable names also indicate the axis along which the measurement was taken (“X”, “Y” and “Z”).
+	Each variable represents the measurement on the body linear acceleration and angular velocity (“timeBodyAcc” or “timeBodyGyro”), which were then derived in time to obtain Jerk signals (“timeBodyAccJerk” and “timeBodyGyroJerk”). Also the magnitude of these three-dimensional signals were calculated using the Euclidean norm (“timeBodyAccMag”, “timeGravityAccMag”, “timeBodyAccJerkMag”, “timeBodyGyroMag”, “timeBodyGyroJerkMag”).
+	
+	A Fast Fourier Transform (FFT) was applied to some of these signals producing frequency-domain equivalents (“frequencyBodyAcc”, “frequencyBodyAccJerk”, “frequencyBodyGyro”, “frequencyBodyAccJerkMag”, “frequencyBodyGyroMag”, “frequencyBodyGyroJerkMag”).
+	
+	Finally, each variable name is appended by two suffixes: (a) an indication of the estimated quantity for that particular measurement (“Mean” for average or “Std” for standard deviation) and (b) the axis along which the measurement was taken (“X”, “Y” or “Z”).
+	
