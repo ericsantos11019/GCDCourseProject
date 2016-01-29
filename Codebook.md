@@ -9,11 +9,8 @@ For each subject and activity, the sensor data from accelerometer and gyroscope 
 
 The tidy data set contains the following variables:
 
-1. **“activity”:** the activity performed by the subject during this particular measurement. Can be one of the following: 
-		WALKING
-		WALKING_UPSTAIRS
-		WALKING_DOWNSTAIRS
-		SITTING
-		STANDING
-		LAYING
-2. **”subject”:** the subject ID for this particular row or measurement. An integer number from 1 to 30.
+1. **“activity”:** A character vector indicating the activity performed by the subject during this particular measurement. Can be one of the following: “WALKING”, “WALKING_UPSTAIRS”, “WALKING_DOWNSTAIRS”, “SITTING”, “STANDING” and “LAYING”.
+2. **”subject”:** An integer from 1 to 30 indicating the subject ID for this particular row or measurement.
+3. **Subsequent Variables:** The remaining columns in the data set indicate the acquired signal measured from the actual sensors and the estimated value calculated from these signals. The variables started by the prefix “time” are time-domain calculated quantities. Similarly, variables started by the prefix “frequency” are frequency-domain quantities, calculated by applying a Fast Fourier Transform (FFT) on the original quantities measured.
+
+	The variable names also indicate the axis along which the measurement was taken (“X”, “Y” and “Z”).
