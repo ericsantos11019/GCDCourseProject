@@ -1,7 +1,8 @@
-#Data Codebook
-##Getting and Cleaning Data Course Project
+## Data Codebook
+### Coursera Data Science Specialization 
+### Getting and Cleaning Data – Course Project
 
-The tidy data set returned from the “run_analisys()” R script (and saved as a TXT file named “tidy_dataset.txt”) is the result of a series of processing steps over the original raw data.
+The tidy data set returned from the “`run_analisys()`” R script (and saved as a TXT file named “`tidy_dataset.txt`”) is the result of a series of processing steps over the original raw data.
 
 The processed data combines a set of TXT files as inputs, which contain the data itself (divided into training and test groups), the variable names (called “features” in the original data set), the list of 30 subjects (for both the training and test groups) and the activity performed by each subject.
 
@@ -9,7 +10,7 @@ For each subject and activity, the sensor data from Accelerationelerometer and g
 
 The tidy data set contains the following variables:
 
-1. **“activity”:** A character vector indicating the activity performed by the subject during this particular measurement. Can be one of the following:
+1. **Column 1 – “`activity`”:** A character vector indicating the activity performed by the subject during this particular measurement. Can be one of the following:
 
 		“WALKING”
 		“WALKING_UPSTAIRS”
@@ -18,8 +19,8 @@ The tidy data set contains the following variables:
 		“STANDING”
 		“LAYING”
 		
-2. **”subject”:** An integer from 1 to 30 indicating the subject ID for this particular row or measurement.
-3. **Subsequent Variables:** The remaining columns in the data set indicate the signal acquired from the actual sensors and the estimated quantity calculated from these signals.
+2. **Column 2 – ”`subject`”:** An integer from 1 to 30 indicating the subject ID for this particular row or measurement.
+3. **Remaining Columns:** Each column indicate the signal acquired from the actual device sensors and the estimated quantity calculated from these signals.
 
 	Each variable represents the measurement on the body linear Acceleration and angular velocity in time-domain representation:
 	
@@ -48,5 +49,5 @@ The tidy data set contains the following variables:
 		“frequencyBodyGyroMag”
 		“frequencyBodyGyroJerkMag”
 	
-	Finally, each variable name is appended by two suffixes: (a) an indication of the estimated quantity for that particular measurement (“Mean” for average or “Std” for standard deviation) and (b) the axis along which the measurement was taken (“X”, “Y” or “Z”).
+	Finally, each variable name is appended by two suffixes: (a) an indication of the estimated quantity for that particular measurement (“`Mean`” for average or “`Std`” for standard deviation) and (b) the axis along which the measurement was taken (“`X`”, “`Y`” or “`Z`”).
 	
