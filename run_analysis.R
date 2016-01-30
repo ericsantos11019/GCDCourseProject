@@ -149,6 +149,7 @@ run_analysis <- function()
   write.table(tidyDataset, "tidy_dataset.txt", row.names = FALSE)
   
   message("Cleaning up and returning...")
+  
   # Sets the working directory back to the previous folder.
   setwd(previousWD)
   
