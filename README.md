@@ -16,9 +16,9 @@ The function also defines a set of helper variables that store all relevant fold
 
 #### 2) Reading Data
 
-The code reads all pertinent files from disk and stores the loaded data in corresponding variables. The reading routine is divided into three parts: (I) reading the data that is common to both training and test groups (“`activity_labels.txt`” and “`features.txt`”); (II) reading training group data (“`X_train.txt`” and “`y_train.txt`”); (III) reading test group data (“`X_test.txt`” and “`y_test.txt`”).
+The code reads all pertinent files from disk and stores the loaded data in corresponding variables. The reading routine is divided into three parts: (I) reading the data that is common to both training and test groups (“`activity_labels.txt`” and “`features.txt`”); (II) reading training group data (“`subject_train.txt`”, “`X_train.txt`” and “`y_train.txt`”); (III) reading test group data (“`subject_test.txt`”, “`X_test.txt`” and “`y_test.txt`”).
 
-The “`y_train.txt`” and “`y_test.txt`” contain the subject IDs for the training and test groups respectively. The “`X_train.txt`” and “`X_test.txt`”, on the other hand, contain the measurements themselves. When reading the data itself (“`X_train.txt`” and “`X_test.txt`” files), the string vector created from “`features.txt`” is used as column (variable) names. This will prove useful later on.
+The “`subject_train.txt`” and “`subject_test.txt`” files contain the subject IDs for the training and test groups. The “`y_train.txt`” and “`y_test.txt`” contain the activity IDs for both groups. The “`X_train.txt`” and “`X_test.txt`”, on the other hand, contain the measurements themselves. When reading the data itself (“`X_train.txt`” and “`X_test.txt`” files), the string vector created from “`features.txt`” is used as column (variable) names. This will prove useful later on.
 
 #### 3) Merging Data
 
