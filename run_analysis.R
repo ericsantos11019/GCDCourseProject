@@ -94,7 +94,7 @@ run_analysis <- function()
   meanStdDataset <- select(fullDataset, indexes)
   
   ##############################################################################
-  # STEP 3) USE DESCRIPTIVE ACTIVITY NAMES THE ACTIVITIES IN THE DATA SET
+  # STEP 3) USE DESCRIPTIVE ACTIVITY NAMES FOR ACTIVITIES IN THE DATA SET
   ##############################################################################
   message("Step 3: Replacing Activity Names...")
   
